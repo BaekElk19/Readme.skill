@@ -2,6 +2,8 @@
 
 > 一份 Claude Code / Codex CLI 的 **skill**：自动生成对外可分享、脱敏的 **AI-Native 开发者 README**。
 
+🌐 **中文** (you are here) · [English README](./README.en.md)
+
 <p align="center">
   <a href="./examples/profile_20260508.md">
     <img src="./examples/poster_20260508_zh.svg" width="540" alt="最新一次跑出的实测海报（脱敏）"/>
