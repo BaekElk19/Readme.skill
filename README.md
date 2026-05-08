@@ -2,6 +2,17 @@
 
 > 一份 Claude Code / Codex CLI 的 **skill**：自动生成对外可分享、脱敏的 **AI-Native 开发者 README**。
 
+<p align="center">
+  <a href="./examples/profile_20260508.md">
+    <img src="./examples/poster_20260508_zh.svg" width="540" alt="最新一次跑出的实测海报（脱敏）"/>
+  </a>
+</p>
+
+<p align="center">
+  <em>↑ 这是 v2.4 在我自己电脑上跑出来的真实输出（128 天 · 14.3B token · 23× cache leverage · 1421★）。</em><br/>
+  <em>点击图片查看完整 <a href="./examples/profile_20260508.md">Markdown profile</a>。</em>
+</p>
+
 ## 这是什么
 
 Readme.skill 不是一个程序，而是一份给 AI agent 的指令集（即 [`SKILL.md`](./skills/readme-skill/SKILL.md)）。当你在 Claude Code 或 Codex 里说出触发词（如「生成我的 AI 档案」），AI 会按照 SKILL.md 的步骤：
@@ -155,6 +166,10 @@ chromium --headless --screenshot=poster.png --window-size=1080,1920 output/poste
 > Skill = 给 AI agent 的指令集，不是替它做事的代码。
 
 [SKILL.md](./skills/readme-skill/SKILL.md) 是唯一的真实交付物。任何"为什么不用一个 Python 脚本一把跑完？"的冲动都被刻意抑制——目的是让 AI 自己理解数据、自己做权衡、自己写出有温度的文字，而不是机械地填模板。
+
+## Star history
+
+[![Stargazers over time](https://api.star-history.com/svg?repos=study8677/Readme.skill&type=Date)](https://star-history.com/#study8677/Readme.skill&Date)
 
 ## 协议
 
