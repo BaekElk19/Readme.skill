@@ -4,6 +4,8 @@
 
 🌐 [中文版 README](./README.md) · **English** (you are here)
 
+> 🎉 **2026-05-08**: Featured in [Ruan Yifeng's *Weekly for Tech Lovers* #395](https://www.ruanyifeng.com/blog/2026/05/weekly-issue-395.html) under "AI Related" — one of the most widely-read independent tech newsletters in the Chinese developer community. Thank you, Ruan! 🙏
+
 <p align="center">
   <a href="./examples/profile_20260508_en.md">
     <img src="./examples/poster_20260508_en.svg" width="540" alt="Latest real run (anonymized)"/>

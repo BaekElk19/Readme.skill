@@ -4,6 +4,8 @@
 
 🌐 **中文** (you are here) · [English README](./README.en.md)
 
+> 🎉 **2026-05-08 入选**：本项目登上 [阮一峰《科技爱好者周刊》第 395 期](https://www.ruanyifeng.com/blog/2026/05/weekly-issue-395.html)「AI 相关」板块——感谢阮老师推荐！🙏
+
 <p align="center">
   <a href="./examples/profile_20260508.md">
     <img src="./examples/poster_20260508_zh.svg" width="540" alt="最新一次跑出的实测海报（脱敏）"/>
