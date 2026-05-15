@@ -178,3 +178,7 @@ chromium --headless --screenshot=poster.png --window-size=1080,1920 output/poste
 ## 协议
 
 MIT
+
+## 友链
+
+- [Linux Do](https://linux.do/)

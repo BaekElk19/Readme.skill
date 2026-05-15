@@ -178,3 +178,7 @@ Design principles (from the v2.4 brief): identity readable in 3 seconds + 6 evid
 ## License
 
 MIT
+
+## Friends
+
+- [Linux Do](https://linux.do/)
