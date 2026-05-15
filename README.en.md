@@ -7,14 +7,14 @@
 > 🎉 **2026-05-08**: Featured in [Ruan Yifeng's *Weekly for Tech Lovers* #395](https://www.ruanyifeng.com/blog/2026/05/weekly-issue-395.html) under "AI Related" — one of the most widely-read independent tech newsletters in the Chinese developer community. Thank you, Ruan! 🙏
 
 <p align="center">
-  <a href="./examples/profile_20260508_en.md">
-    <img src="./examples/poster_20260508_en.svg" width="540" alt="Latest real run (anonymized)"/>
+  <a href="./examples/profile_20260515_en.md">
+    <img src="./examples/poster_20260515_en.svg" width="540" alt="Latest real run (anonymized)"/>
   </a>
 </p>
 
 <p align="center">
-  <em>↑ This is a real run on the author's own machine (128 days · 14.3B tokens · 23× cache leverage · 1421★).</em><br/>
-  <em>Click the image for the full <a href="./examples/profile_20260508_en.md">Markdown profile</a>.</em>
+  <em>↑ This is a real run on the author's own machine (149 days · 19.4B tokens · 23.8× cache leverage · 1503★).</em><br/>
+  <em>Click the image for the full <a href="./examples/profile_20260515_en.md">Markdown profile</a>.</em>
 </p>
 
 ## What is this

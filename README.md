@@ -7,14 +7,14 @@
 > 🎉 **2026-05-08 入选**：本项目登上 [阮一峰《科技爱好者周刊》第 395 期](https://www.ruanyifeng.com/blog/2026/05/weekly-issue-395.html)「AI 相关」板块——感谢阮老师推荐！🙏
 
 <p align="center">
-  <a href="./examples/profile_20260508.md">
-    <img src="./examples/poster_20260508_zh.svg" width="540" alt="最新一次跑出的实测海报（脱敏）"/>
+  <a href="./examples/profile_20260515.md">
+    <img src="./examples/poster_20260515_zh.svg" width="540" alt="最新一次跑出的实测海报（脱敏）"/>
   </a>
 </p>
 
 <p align="center">
-  <em>↑ 这是 v2.4 在我自己电脑上跑出来的真实输出（128 天 · 14.3B token · 23× cache leverage · 1421★）。</em><br/>
-  <em>点击图片查看完整 <a href="./examples/profile_20260508.md">Markdown profile</a>。</em>
+  <em>↑ 这是 v2.4 在我自己电脑上跑出来的真实输出（149 天 · 19.4B token · 23.8× cache leverage · 1503★）。</em><br/>
+  <em>点击图片查看完整 <a href="./examples/profile_20260515.md">Markdown profile</a>。</em>
 </p>
 
 ## 这是什么
