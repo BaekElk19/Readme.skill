@@ -14,10 +14,11 @@ license: MIT
 # Readme.skill — AI-Native 开发者档案生成器
 
 You (the AI agent invoking this skill) will read local Claude Code + Codex data,
-compute a fixed set of dimensions, and render a Chinese Markdown profile under
-`./output/`. **You do all of the work** — read the files with `Read`, query
-sqlite via `Bash`, and synthesize the prose yourself. Do **not** write helper
-scripts; the skill is the recipe.
+compute a fixed set of dimensions, and render a Markdown profile under
+`./output/` in the user's requested language (Chinese by default; English when
+the user asks in English or explicitly requests English). **You do all of the
+work** — read the files with `Read`, query sqlite via `Bash`, and synthesize the
+prose yourself. Do **not** write helper scripts; the skill is the recipe.
 
 > 默认行为：**对外分享版** —— 项目名匿名、敏感信息脱敏。
 > 如果用户明确说"私人版 / 不要脱敏 / show real names"，跳过匿名步骤。
@@ -511,9 +512,15 @@ If user said "show real names" / "私人版":
 
 ## Step 8 — 渲染最终 Markdown
 
-Write to `output/profile_<YYYYMMDD>.md` using **exactly** this structure
-(中文叙事 + 表格；技术词保留英文；**讲故事优先于堆数据**；
-展示「因为 AI 而不同」，而不仅仅是「用了很多 AI」)：
+Choose the profile language before writing:
+- 用户用中文问或未指定语言 → `output/profile_<YYYYMMDD>.md`，使用中文叙事
+- 用户用英文问或明确要求 English / EN → `output/profile_<YYYYMMDD>_en.md`，使用英文叙事
+- 用户要求 both / bilingual / 两个都要 → 两份都生成
+
+Use **exactly** this structure. For English output, translate headings and prose
+to English following `examples/profile_20260508_en.md`; for Chinese output, use
+the structure below. Technical terms stay in English in both versions. **讲故事优先于堆数据**；
+展示「因为 AI 而不同」，而不仅仅是「用了很多 AI」：
 
 ```markdown
 # <name or github_login> · AI-Native Developer Profile
@@ -709,7 +716,7 @@ xhigh **<n>**（**<%>**）· high **<n>** · medium **<n>** · low **<n>**
 
 ## Step 8b — 海报渲染（v2.4 新增 · 可选）
 
-如果用户说"生成海报" / "AI 海报" / "social card" / "可分享图" / "make poster"，或默认就把它当一份附加交付物，在 markdown profile 完成后再渲染一份 SVG 海报到 `output/poster_<YYYYMMDD>.svg`。
+如果用户说"生成海报" / "AI 海报" / "social card" / "可分享图" / "make poster"，或默认就把它当一份附加交付物，在 markdown profile 完成后再渲染 SVG 海报到 `output/poster_<YYYYMMDD>_<lang>.svg`（例如 `_zh.svg` / `_en.svg`）。
 
 ### 设计原则（来自 v2.4 brief，由 Codex 审校）
 
@@ -873,16 +880,16 @@ xhigh **<n>**（**<%>**）· high **<n>** · medium **<n>** · low **<n>**
 
 ## Step 9 — 输出与交接
 
-把 Markdown 写入 `output/profile_<YYYYMMDD>.md`，
+把 Markdown 写入对应语言的 `output/profile_<YYYYMMDD>.md` 或 `output/profile_<YYYYMMDD>_en.md`，
 然后给用户**一句话**总结：
 
 ```
-✅ Profile generated: output/profile_<YYYYMMDD>.md
-🎨 Poster:    output/poster_<YYYYMMDD>.svg  (如果生成了)
+✅ Profile generated: output/profile_<YYYYMMDD>.md  (或 output/profile_<YYYYMMDD>_en.md)
+🎨 Poster:    output/poster_<YYYYMMDD>_<lang>.svg  (如果生成了)
 关键数字：<sessions> sessions / <tokens> tokens / <github_commits> commits
-预览：head -40 output/profile_<YYYYMMDD>.md
-预览海报：open output/poster_<YYYYMMDD>.svg
-转 PNG：rsvg-convert -h 1920 output/poster_<YYYYMMDD>.svg > poster.png
+预览：head -40 <profile_path>
+预览海报：open output/poster_<YYYYMMDD>_<lang>.svg
+转 PNG：rsvg-convert -h 1920 output/poster_<YYYYMMDD>_<lang>.svg > poster.png
        (或 chromium --headless --screenshot=poster.png poster.svg)
 ```
 

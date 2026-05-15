@@ -24,8 +24,8 @@ Readme.skill 不是一个程序，而是一份给 AI agent 的指令集（即 [`
 1. 读取本机 `~/.claude/` 与 `~/.codex/` 的统计文件、SQLite、历史 JSONL
 2. 调用 `gh` 拉取你的 GitHub 公开贡献日历与 top 仓库
 3. 在你的工作目录里跑只读 `git log`，统计本地提交
-4. 计算 7 个维度（一览 / AI-Native / 协作风格 / 项目 / 主题 / 节奏 / 投入×产出）
-5. 默认匿名脱敏，输出 `output/profile_YYYYMMDD.md`
+4. 计算 10 个维度（一览 / AI-Native / 基础设施 / 协作风格 / 项目 / 主题 / 节奏 / Token 经济学 / 投入×产出 / 进化曲线）
+5. 默认匿名脱敏，按提问语言输出 `output/profile_YYYYMMDD.md` 或 `output/profile_YYYYMMDD_en.md`
 
 整个过程**只读、不联网（除 `gh`）**，可放心运行并对外分享结果。对话正文可被读取以提取关键词和协作风格信号，但原文不会写进报告。
 
@@ -91,7 +91,7 @@ mkdir -p ~/.codex/skills/readme-skill && curl -fsSL https://raw.githubuserconten
 - "build my AI usage profile"
 - "summarize my Claude / Codex history"
 
-AI 会跑完整套流程，把结果写到 `output/profile_<日期>.md`。
+AI 会跑完整套流程，把结果写到 `output/profile_<日期>.md`。如果你用英文提问或明确要求英文版，会写到 `output/profile_<日期>_en.md`。
 
 ### 私人版 vs 分享版
 
@@ -177,7 +177,7 @@ chromium --headless --screenshot=poster.png --window-size=1080,1920 output/poste
 
 ## 协议
 
-MIT
+[MIT](./LICENSE)
 
 ## 友链
 

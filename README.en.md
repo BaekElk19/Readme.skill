@@ -25,7 +25,7 @@ Readme.skill is not a program — it's an instruction set for an AI agent (i.e. 
 2. Call `gh` to pull your GitHub public contribution calendar and top repos
 3. Run read-only `git log` in your working directories to count local commits
 4. Compute 10 dimensions (overview / AI-Native / collaboration style / projects / topics / rhythm / output × input / velocity / evolution / token economics)
-5. Anonymize and redact by default; write to `output/profile_YYYYMMDD.md`
+5. Anonymize and redact by default; write in the requested language to `output/profile_YYYYMMDD.md` or `output/profile_YYYYMMDD_en.md`
 
 The whole flow is **read-only and fully local (except `gh`)** — safe to run, safe to share. Conversation text may be read for keyword and collaboration-style signal, but never copied verbatim into the report.
 
@@ -91,7 +91,7 @@ After installing, say one of these in Claude Code or Codex:
 - "generate my AI profile" / "生成我的 AI 档案"
 - "analyze my Claude usage"
 
-The AI runs the full pipeline and writes to `output/profile_<date>.md`.
+The AI runs the full pipeline and writes to `output/profile_<date>_en.md` for English requests, or `output/profile_<date>.md` for Chinese/default requests.
 
 ### Private vs shareable
 
@@ -177,7 +177,7 @@ Design principles (from the v2.4 brief): identity readable in 3 seconds + 6 evid
 
 ## License
 
-MIT
+[MIT](./LICENSE)
 
 ## Friends
 
