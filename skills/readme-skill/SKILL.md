@@ -441,6 +441,9 @@ Aggregate:
   **antigravity_tasks**（Antigravity task/session 数）必须出现在「一览」里
 - 同期 GitHub: commits, PRs, issues, calendar_total
 - 本地 git: commits / +additions / −deletions / repos
+
+If available, include `antigravity_text_files`, `antigravity_text_chars`, `antigravity_text_lines`, and `antigravity_estimated_token_equivalent` as an Antigravity artifact scale note, not as real token usage.
+
 - **Velocity 指标**（v2.0 新增）:
   - `commits_per_day = git_local_commits / active_days`
   - `loc_churn_per_day = (additions + deletions) / active_days`
@@ -611,7 +614,9 @@ make, get, just, also, will, would, can.
 数据来源：
 - Claude `stats-cache.json` 的 `modelUsage` + `dailyModelTokens`
 - Codex sqlite `threads` 的 `tokens_used` + 月度聚合（Step 3.1 已查）
-- Antigravity contributes activity and workflow metrics, but not token economics unless a real token field is present in allowed local text data.
+- Antigravity contributes activity and workflow metrics only; exclude it from token economics unless a verified token field exists in allowed local text data.
+
+Antigravity `estimated token-equivalent (non-billing)` is a text-scale proxy from local artifacts. Do not add it to `claude_tokens_spent`, `claude_cache_read`, `codex_tokens`, total token-through, cache leverage, paid/new token totals, or per-model token tables. It may appear only in an Antigravity/local-artifact subsection or a clearly labeled footnote.
 
 计算：
 1. **总投入** = `claude_spent + codex_tokens`（新付费 token 总量）
