@@ -327,7 +327,7 @@ find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -type f \
         printf "antigravity_text_files=%d\n", files + 0
         printf "antigravity_text_lines=%d\n", lines + 0
         printf "antigravity_text_chars=%d\n", chars + 0
-        printf "antigravity_estimated_token_equivalent=%d\n", int((chars + 3) / 4)
+        printf "antigravity_estimated_token_equivalent=%d\n", int(chars / 4 + 0.5)
       }'
 ```
 
