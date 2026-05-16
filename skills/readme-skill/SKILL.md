@@ -251,6 +251,8 @@ ls ~/.codex/rules/       | wc -l   # custom rules
 
 Antigravity is the third local AI tool source. Treat each
 `~/.gemini/antigravity/brain/<uuid>/` directory as one Antigravity task/session.
+Only count directories whose basename is a UUID; ignore non-task directories such
+as `tempmediaStorage`.
 
 **Only read local text data**:
 - `*.metadata.json`
@@ -265,43 +267,51 @@ Antigravity is the third local AI tool source. Treat each
 
 ```bash
 AG_BRAIN="$HOME/.gemini/antigravity/brain"
+AG_UUID_RE='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
-# Count Antigravity task/session directories
-find "$AG_BRAIN" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l
+# Count Antigravity task/session directories; exclude temp/media helper dirs
+find "$AG_BRAIN" -mindepth 1 -maxdepth 1 -type d 2>/dev/null \
+  | grep -E "/$AG_UUID_RE$" | wc -l
 
-# Artifact type breakdown from metadata
-find "$AG_BRAIN" -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
-  -exec jq -r '.artifactType // "unknown"' {} + | sort | uniq -c | sort -rn
+# Artifact type breakdown from metadata in task/session directories
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
+  | grep -E "/$AG_UUID_RE/[^/]+\.metadata\.json$" \
+  | xargs -r jq -r '.artifactType // "unknown"' | sort | uniq -c | sort -rn
 
 # Activity by day from metadata updatedAt
-find "$AG_BRAIN" -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
-  -exec jq -r '.updatedAt // empty' {} + \
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
+  | grep -E "/$AG_UUID_RE/[^/]+\.metadata\.json$" \
+  | xargs -r jq -r '.updatedAt // empty' \
   | cut -c1-10 | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' \
   | sort | uniq -c
 
 # Monthly activity for Evolution curve
-find "$AG_BRAIN" -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
-  -exec jq -r '.updatedAt // empty' {} + \
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
+  | grep -E "/$AG_UUID_RE/[^/]+\.metadata\.json$" \
+  | xargs -r jq -r '.updatedAt // empty' \
   | cut -c1-7 | grep -E '^[0-9]{4}-[0-9]{2}$' \
   | sort | uniq -c
 
 # Summaries for topic extraction; do not quote full text in the README
-find "$AG_BRAIN" -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
-  -exec jq -r '.summary // empty' {} + | head -200
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -name '*.metadata.json' -type f 2>/dev/null \
+  | grep -E "/$AG_UUID_RE/[^/]+\.metadata\.json$" \
+  | xargs -r jq -r '.summary // empty' | head -200
 
 # Markdown headings for topic extraction
-find "$AG_BRAIN" -maxdepth 2 -type f \
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -type f \
   \( -name 'task.md' -o -name 'implementation_plan.md' -o -name 'walkthrough.md' \
      -o -name 'task.md.resolved*' -o -name 'implementation_plan.md.resolved*' \
      -o -name 'walkthrough.md.resolved*' \) 2>/dev/null \
-  -exec grep -hE '^#{1,3} ' {} + | head -200
+  | grep -E "/$AG_UUID_RE/[^/]+$" \
+  | xargs -r grep -hE '^#{1,3} ' | head -200
 
 # Checkbox volume, useful for task/planning depth
-find "$AG_BRAIN" -maxdepth 2 -type f \
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -type f \
   \( -name 'task.md' -o -name 'implementation_plan.md' -o -name 'walkthrough.md' \
      -o -name 'task.md.resolved*' -o -name 'implementation_plan.md.resolved*' \
      -o -name 'walkthrough.md.resolved*' \) 2>/dev/null \
-  -exec grep -hE '^- \[[ xX/-]\]' {} + | wc -l
+  | grep -E "/$AG_UUID_RE/[^/]+$" \
+  | xargs -r grep -hE '^- \[[ xX/-]\]' | wc -l
 ```
 
 Compute:
