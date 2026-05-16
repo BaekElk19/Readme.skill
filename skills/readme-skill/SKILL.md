@@ -255,7 +255,7 @@ Only count directories whose basename is a UUID; ignore non-task directories suc
 as `tempmediaStorage`.
 
 **Only read local text data**:
-- `*.metadata.json`
+- `*.metadata.json` for artifact metadata and summaries
 - `task.md`, `implementation_plan.md`, `walkthrough.md`
 - text variants ending in `.resolved`, `.resolved.0`, `.resolved.1`, etc.
 
@@ -312,6 +312,23 @@ find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -type f \
      -o -name 'walkthrough.md.resolved*' \) 2>/dev/null \
   | grep -E "/$AG_UUID_RE/[^/]+$" \
   | xargs -r grep -hE '^- \[[ xX/-]\]' | wc -l
+
+# Antigravity text artifact scale. This is NOT billing usage and MUST NOT be
+# merged into Claude/Codex token totals.
+find "$AG_BRAIN" -mindepth 2 -maxdepth 2 -type f \
+  \( -name 'task.md' -o -name 'implementation_plan.md' -o -name 'walkthrough.md' \
+     -o -name 'task.md.resolved*' -o -name 'implementation_plan.md.resolved*' \
+     -o -name 'walkthrough.md.resolved*' \) 2>/dev/null \
+  | grep -E "/$AG_UUID_RE/[^/]+$" \
+  | xargs -r wc -l -m \
+  | awk '
+      $NF != "total" { files++; lines += $1; chars += $2 }
+      END {
+        printf "antigravity_text_files=%d\n", files + 0
+        printf "antigravity_text_lines=%d\n", lines + 0
+        printf "antigravity_text_chars=%d\n", chars + 0
+        printf "antigravity_estimated_token_equivalent=%d\n", int((chars + 3) / 4)
+      }'
 ```
 
 Compute:
@@ -321,8 +338,12 @@ Compute:
 - `antigravity_first_active` / `antigravity_last_active` = min/max valid `updatedAt` dates.
 - `antigravity_monthly_activity` = monthly counts from valid `updatedAt` values.
 - `antigravity_topics` = metadata summaries + markdown headings + checkbox section labels, used only for keywords and high-level themes.
+- `antigravity_text_files` = count of eligible Antigravity text artifact files.
+- `antigravity_text_chars` = total character count across eligible Antigravity text artifacts.
+- `antigravity_text_lines` = total line count across eligible Antigravity text artifacts.
+- `antigravity_estimated_token_equivalent = round(antigravity_text_chars / 4)` as a rough text-scale proxy only.
 
-If Antigravity data does not expose token counts, use `—` in token columns or omit token metrics for Antigravity. Do not estimate or invent Antigravity tokens.
+Antigravity data does not expose verified billing token counts. Use `—` in token columns or omit token metrics for Antigravity. If reporting `antigravity_estimated_token_equivalent`, label it exactly as **estimated token-equivalent (non-billing)** and keep it outside all real token totals, token economics tables, and billing/paid-token claims.
 
 ---
 
