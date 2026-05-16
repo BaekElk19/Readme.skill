@@ -21,7 +21,7 @@
 
 Readme.skill 不是一个程序，而是一份给 AI agent 的指令集（即 [`SKILL.md`](./skills/readme-skill/SKILL.md)）。当你在 Claude Code 或 Codex 里说出触发词（如「生成我的 AI 档案」），AI 会按照 SKILL.md 的步骤：
 
-1. 读取本机 `~/.claude/` 与 `~/.codex/` 的统计文件、SQLite、历史 JSONL
+1. 读取本机 `~/.claude/`、项目内 `.claude/plans`（如配置）与 `~/.codex/` 的统计文件、SQLite、历史 JSONL
 2. 调用 `gh` 拉取你的 GitHub 公开贡献日历与 top 仓库
 3. 在你的工作目录里跑只读 `git log`，统计本地提交
 4. 计算 10 个维度（一览 / AI-Native / 基础设施 / 协作风格 / 项目 / 主题 / 节奏 / Token 经济学 / 投入×产出 / 进化曲线）
@@ -149,7 +149,7 @@ chromium --headless --screenshot=poster.png --window-size=1080,1920 output/poste
 | Claude Code 预聚合 | `~/.claude/stats-cache.json` | sessions / messages / tokens / hour heatmap |
 | Claude 命令历史 | `~/.claude/history.jsonl` | slash 命令热度、项目归属 |
 | Claude 项目 | `~/.claude/projects/<encoded>/*.jsonl` | 每项目 session 计数 + 真实 cwd 还原 |
-| Claude 计划 | `~/.claude/plans/*.md` | plan 标题（关键词语料） |
+| Claude 计划 | `~/.claude/plans/*.md` + settings 中的 `plansDirectory` | plan 数量与标题（关键词语料） |
 | Claude skills | `~/.claude/skills/` | 自研 skill 数 |
 | Codex 主库 | `~/.codex/state_5.sqlite` (read-only) | threads 表的全部统计 |
 | Codex 命令 | `~/.codex/history.jsonl` | prompt 文本采样 |

@@ -39,7 +39,7 @@ Use the same mapping consistently across all sections.
 
 ---
 
-## Step 2 — 读取 Claude Code 数据 (`~/.claude/`)
+## Step 2 — 读取 Claude Code 数据 (`~/.claude/` + 项目 `.claude/`)
 
 ### 2.1 预聚合统计（最权威，先看这个）
 
@@ -102,10 +102,29 @@ head -1 ~/.claude/projects/<encoded>/*.jsonl 2>/dev/null \
 
 ### 2.4 计划与 skill 自研
 
+Claude Code 的 plan 文件目录不是固定值。默认在 `~/.claude/plans`,
+但用户可以通过 `plansDirectory` 改到项目工作目录下，例如
+`"./.claude/plans"`。统计 plans 时必须先解析候选 plan 目录，不能只枚举
+`~/.claude/plans/*.md`。
+
+解析规则：
+- 先从 `~/.claude/projects/*/*.jsonl` 的 `cwd` 字段恢复 Claude Code 访问过的项目根目录。
+- 对每个项目根目录，按 Claude Code settings 优先级读取：
+  `.claude/settings.local.json` > `.claude/settings.json` > `~/.claude/settings.json` > default。
+- 如果有效 settings 中存在 `plansDirectory`：
+  - 绝对路径保持不变；
+  - `~/...` 展开为 `$HOME/...`；
+  - `./...` 或其他相对路径按该项目根目录解析。
+- 如果没有配置，使用默认 `~/.claude/plans`。
+- 把所有候选目录下的 `*.md` 真实路径去重后，再统计 plan 数量和标题。
+
 ```bash
-# Plan titles (first # heading of each plan)
-for f in ~/.claude/plans/*.md; do
-  head -2 "$f" | grep -m1 '^# ' | sed 's/^# //'
+# Plan titles (first # heading of each plan) from all resolved plan dirs.
+# Include ~/.claude/plans plus any per-project plansDirectory targets.
+# Count plan files by file count, not by title extraction success.
+plan_count=<resolved-plan-file-count>
+for f in <resolved-plan-files>; do
+  awk '/^# / { sub(/^# /, ""); print; exit }' "$f"
 done
 
 ls ~/.claude/skills/ | wc -l       # skills installed / authored
@@ -361,17 +380,29 @@ Aggregate:
   - 分类为：**Claude 主导**（ratio > 0.7）/ **Codex 主导**（ratio < 0.3）/ **双引擎**（0.3~0.7）
   - 在项目表中新增「编排模式」列
   - 汇总：双引擎项目数 / Claude 主导数 / Codex 主导数
-- 用以下规则给每个项目打**领域标签**（命中第一条即停）：
+- 用证据打分给每个项目打**领域标签**，不要只按第一命中关键词硬归类：
+  1. 分类前使用真实项目信号：`cwd` basename、GitHub repo 描述 / topics / primary language、Codex thread titles、Claude history first prompts、本地文件名提示（如 `package.json` 依赖、`frontend/`、`apps/web/`、`api/`）。匿名化只发生在最终输出阶段。
+  2. 每个领域按命中证据累计分数，选择最高分。若两个领域接近，优先选择更具体的产品领域，而不是泛化到“基础设施 / 部署”。
+  3. 不要因为出现 `deploy`、`router`、`ops`、`docker` 等单个工程词，就把一个有明显用户界面或业务功能的产品项目归到“基础设施 / 部署”。
+  4. 只有证据不足或最高分仍很弱时，才归为“其他”，并在叙事里说明分类信号不足。
 
-| 领域 | 关键词（小写匹配 cwd basename + 标题） |
+| 领域 | 关键词 / 证据（小写匹配 cwd basename + 标题 + 项目信号） |
 | --- | --- |
-| ML / RL / 论文 | rllunwen, rl-, lunwen, paper, thesis, 论文, danzi, 大创 |
-| 基础设施 / 部署 | router, deploy, infra, ops, monitor, k8s, ci-cd |
-| AI 工具 / Skill | skill, claude, codex, agent, antigravity, easy_claude, vibe-forge |
-| 产品 / 业务后端 | teamo, askmany, service, backend, api, ama-, steward |
-| 数据 / 分析 | readyourusers, analytics, data, bi-project, bibili |
-| 文档 / Markdown | readme, doc, documents |
-| 其他 | （fallback） |
+| 产品 / 业务前端 | frontend, front-end, web, app, h5, mobile, miniapp, ui, ux, page, route, router, dashboard, console, admin, portal, client, website, next, react, vue, vite, svelte, tailwind, shadcn, electron, extension, 小程序, 前端, 页面, 官网, 管理台, 控制台, 后台 |
+| 产品 / 业务后端 | backend, server, api, service, gateway, worker, queue, job, db, database, prisma, django, fastapi, express, nest, auth, billing, payment, user, backend service, 后端, 服务端, 接口, 鉴权, 支付, 用户 |
+| 产品 / 业务全栈 | product, saas, crm, cms, workspace, studio, platform, marketplace, ecommerce, shop, chat, editor, dashboard + api, web + api, app + server, 产品, 业务, 工作台, 平台, 商城 |
+| AI 工具 / Skill | skill, claude, codex, agent, subagent, mcp, prompt, workflow, plugin, antigravity, easy_claude, vibe-forge, readme.skill |
+| 基础设施 / 部署 | deploy, infra, ops, monitor, observability, k8s, ci-cd, docker, compose, terraform, nginx, ingress, traefik, caddy, api-gateway, gateway infra, healthcheck, log, cron, 自动化部署, 巡检 |
+| 数据 / 分析 | analytics, data, dataset, bi, report, metrics, dashboard analytics, crawler, scrape, readyourusers, bibili, 埋点, 数据, 报表, 分析, 采集 |
+| ML / RL / 论文 | rllunwen, rl-, ml, model, training, eval, paper, thesis, 论文, 实验, 大创 |
+| 文档 / Markdown | readme, doc, docs, documents, markdown, profile, report, handbook, 文档, 手册 |
+| 其他 | 证据不足时的 fallback |
+
+- 领域分布表的「特征」列必须来自证据，不要即兴编标签：
+  - 从该领域 Top 项目的真实 basename / repo topics / primary language / 依赖框架 / 高频 thread title 关键词中抽取 3-6 个短词。
+  - 优先保留能说明项目性质的词，如 `React`、`Next.js`、`dashboard`、`API`、`billing`、`agent`、`deploy`。
+  - 过滤泛词：`project`、`repo`、`test`、`fix`、`update`、`misc`、`code`、`task`。
+  - 如果某领域只有弱证据，写 `信号不足`，不要补想象中的业务特征。
 
 ### 6.5 兴趣主题 & 关键词
 
@@ -617,9 +648,10 @@ xhigh **<n>**（**<%>**）· high **<n>** · medium **<n>** · low **<n>**
 
 跨 **<n>** 个项目活跃，按领域分布：
 
-| 领域 | 项目数 |
-| --- | ---: |
-| … | … |
+| 领域 | 项目数 | 特征 |
+| --- | ---: | --- |
+| 产品 / 业务前端 | <n> | React、dashboard、管理台 |
+| … | … | … |
 
 ### Top 项目（脱敏）
 | 项目 | Claude | Codex | Git commits | 编排模式 | 领域 |
@@ -705,7 +737,8 @@ xhigh **<n>**（**<%>**）· high **<n>** · medium **<n>** · low **<n>**
 
 ## 📊 数据来源 & 隐私承诺
 
-- 数据 100% 本地：`~/.claude/*` + `~/.codex/*` + 本地 `git log` + GitHub via `gh`
+- 数据 100% 本地：`~/.claude/*` + 项目 `.claude/plans`（如配置）+ `~/.codex/*` + 本地 `git log` + GitHub via `gh`
+- Claude plans 同时覆盖默认 `~/.claude/plans` 与 settings 中解析出的 `plansDirectory`
 - 对话正文仅用于关键词与协作风格分析，原文不会出现在报告中
 - 项目名已匿名，API key / token / 邮箱 已正则清洗
 - 报告由 Claude Code / Codex 按 Readme.skill 自动生成，可重复运行

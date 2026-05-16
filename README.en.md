@@ -21,7 +21,7 @@
 
 Readme.skill is not a program — it's an instruction set for an AI agent (i.e. [`SKILL.md`](./skills/readme-skill/SKILL.md)). When you say a trigger phrase in Claude Code or Codex (e.g. "build my AI usage profile"), the AI follows the SKILL.md recipe:
 
-1. Read your local `~/.claude/` and `~/.codex/` stats files, SQLite, history JSONL
+1. Read your local `~/.claude/`, project `.claude/plans` when configured, and `~/.codex/` stats files, SQLite, history JSONL
 2. Call `gh` to pull your GitHub public contribution calendar and top repos
 3. Run read-only `git log` in your working directories to count local commits
 4. Compute 10 dimensions (overview / AI-Native / collaboration style / projects / topics / rhythm / output × input / velocity / evolution / token economics)
@@ -149,7 +149,7 @@ Design principles (from the v2.4 brief): identity readable in 3 seconds + 6 evid
 | Claude Code aggregated stats | `~/.claude/stats-cache.json` | sessions / messages / tokens / hour heatmap |
 | Claude command history | `~/.claude/history.jsonl` | slash command frequency, project mapping |
 | Claude projects | `~/.claude/projects/<encoded>/*.jsonl` | per-project session count + real cwd recovery |
-| Claude plans | `~/.claude/plans/*.md` | plan titles (keyword corpus) |
+| Claude plans | `~/.claude/plans/*.md` + `plansDirectory` from settings | plan count and titles (keyword corpus) |
 | Claude skills | `~/.claude/skills/` | self-built skill count |
 | Codex primary store | `~/.codex/state_5.sqlite` (read-only) | full statistics from threads table |
 | Codex commands | `~/.codex/history.jsonl` | prompt text sampling |
